@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
 class Saver(private val settings: Settings) : BaseCampaignEventListener(false), EveryFrameScript {
+
     enum class SaveType {
         FULL_SAVE,
         AUTOSAVE
@@ -22,7 +23,6 @@ class Saver(private val settings: Settings) : BaseCampaignEventListener(false), 
     private var saveType: SaveType? = null
 
     override fun isDone(): Boolean = false
-
     override fun runWhilePaused(): Boolean = true
 
     override fun advance(amount: Float) {
@@ -32,6 +32,7 @@ class Saver(private val settings: Settings) : BaseCampaignEventListener(false), 
         val ui = Global.getSector().campaignUI
         if (ui.isShowingMenu || ui.isShowingDialog) return
 
+        // FULL SAVE logic remains unchanged
         if (settings.useFullSave) {
             val savePeriodSeconds = toSeconds(settings.fullSavePeriod)
             if (savePeriodSeconds <= lastSave) {
@@ -50,11 +51,21 @@ class Saver(private val settings: Settings) : BaseCampaignEventListener(false), 
             }
         }
 
+        // AUTOSAVE logic with global cooldown
         if (shouldSave) {
+            // check global cooldown
+            if (!AutosaveCooldownManager.canAutosave()) {
+                // logger.info("Autosave skipped due to cooldown")
+                return
+            }
+
             logger.info("Run autosave")
             saveType = SaveType.AUTOSAVE
             ui.autosave()
             shouldSave = false
+
+            // mark that a save has occurred (global cooldown starts)
+            AutosaveCooldownManager.markSaved()
         }
     }
 
