@@ -18,10 +18,11 @@ class AutosavePlugin : BaseModPlugin() {
         saver = Saver(settings)
         Global.getSector().addTransientScript(saver)
         Global.getSector().addTransientListener(saver)
-        Global.getSector().listenerManager.addListener(AutosaveListener())
     }
 
+    // ✅ Called after any save (manual or autosave)
     override fun afterGameSave() {
         saver?.afterGameSave()
+        AutosaveCooldownManager.markSaved()
     }
 }
