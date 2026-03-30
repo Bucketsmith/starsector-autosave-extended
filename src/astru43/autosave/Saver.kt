@@ -18,8 +18,8 @@ class Saver(private val settings: Settings) : BaseCampaignEventListener(false), 
 
     private val logger: Logger = Global.getLogger(Saver::class.java)
     private var shouldSave = false
-    private var lastSave: Float = 0f
-    private var lastMessage: Float = 0f
+    private var lastSave: Float = 0f        // NON-NULLABLE
+    private var lastMessage: Float = 0f     // NON-NULLABLE
     private var saveType: SaveType? = null
 
     override fun isDone(): Boolean = false
@@ -32,7 +32,6 @@ class Saver(private val settings: Settings) : BaseCampaignEventListener(false), 
         val ui = Global.getSector().campaignUI
         if (ui.isShowingMenu || ui.isShowingDialog) return
 
-        // FULL SAVE logic remains unchanged
         if (settings.useFullSave) {
             val savePeriodSeconds = toSeconds(settings.fullSavePeriod)
             if (savePeriodSeconds <= lastSave) {
@@ -44,28 +43,18 @@ class Saver(private val settings: Settings) : BaseCampaignEventListener(false), 
             }
 
             if (savePeriodSeconds - lastSave <= 4) {
-                if (lastMessage >= 1) {
-                    MessageUtils.showMessage("Full save in ${(savePeriodSeconds - lastSave).roundToInt()}")
+                if (lastMessage >= 1f) {
+                    MessageUtils.showMessage("Full save in ${(savePeriodSeconds - lastSave).roundToInt()} seconds")
                     lastMessage = 0f
                 } else lastMessage += amount
             }
         }
 
-        // AUTOSAVE logic with global cooldown
         if (shouldSave) {
-            // check global cooldown
-            if (!AutosaveCooldownManager.canAutosave()) {
-                // logger.info("Autosave skipped due to cooldown")
-                return
-            }
-
             logger.info("Run autosave")
             saveType = SaveType.AUTOSAVE
             ui.autosave()
             shouldSave = false
-
-            // mark that a save has occurred (global cooldown starts)
-            AutosaveCooldownManager.markSaved()
         }
     }
 
