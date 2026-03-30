@@ -17,6 +17,7 @@ class AutosavePlugin : BaseModPlugin() {
         saver = Saver(settings)
         Global.getSector().addTransientScript(saver)
         Global.getSector().addTransientListener(saver)
+        Global.getSector().getListenerManager().addListener(new AutosaveListener());
     }
 
     override fun afterGameSave() {
