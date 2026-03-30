@@ -18,8 +18,8 @@ class Saver(private val settings: Settings) : BaseCampaignEventListener(false), 
 
     private val logger: Logger = Global.getLogger(Saver::class.java)
     private var shouldSave = false
-    private var lastSave: Float = 0f        // NON-NULLABLE
-    private var lastMessage: Float = 0f     // NON-NULLABLE
+    private var lastSave: Float = 0f
+    private var lastMessage: Float = 0f
     private var saveType: SaveType? = null
 
     override fun isDone(): Boolean = false
@@ -43,14 +43,14 @@ class Saver(private val settings: Settings) : BaseCampaignEventListener(false), 
             }
 
             if (savePeriodSeconds - lastSave <= 4) {
-                if (lastMessage >= 1f) {
-                    MessageUtils.showMessage("Full save in ${(savePeriodSeconds - lastSave).roundToInt()} seconds")
+                if (lastMessage >= 1) {
+                    MessageUtils.showMessage("Full save in ${(savePeriodSeconds - lastSave).roundToInt()}")
                     lastMessage = 0f
                 } else lastMessage += amount
             }
         }
 
-        if (shouldSave) {
+        if (shouldSave && AutosaveCooldownManager.canAutosave()) {
             logger.info("Run autosave")
             saveType = SaveType.AUTOSAVE
             ui.autosave()
