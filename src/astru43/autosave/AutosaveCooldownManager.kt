@@ -1,20 +1,19 @@
-package autosave
+package astru43.autosave
 
-import lunalib.lunaSettings.LunaSettings
+import lunalib.lunaSettings
 
 object AutosaveCooldownManager {
 
-    private var lastAutosaveTimeMs: Long = System.currentTimeMillis()
+    private var lastAutosaveTime: Long = 0
+    private val minIntervalMinutes: Int
+        get() = lunaSettings.getInt("autosave_min_interval", 15) // Default 15 min
 
     fun canAutosave(): Boolean {
-        val minutes = LunaSettings.getFloat("autosave_extended", "autosave_min_interval")
-        val minIntervalMs = (minutes * 60_000).toLong()
-
         val now = System.currentTimeMillis()
-        return now - lastAutosaveTimeMs >= minIntervalMs
-    }
-
-    fun markSaved() {
-        lastAutosaveTimeMs = System.currentTimeMillis()
+        if (now - lastAutosaveTime >= minIntervalMinutes * 60_000L) {
+            lastAutosaveTime = now
+            return true
+        }
+        return false
     }
 }
