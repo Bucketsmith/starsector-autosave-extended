@@ -3,4 +3,5 @@ autosave_on_jump,Autosave on jump,Boolean,true,,Create autosave after jumping in
 autosave_on_transaction,Autosave on transaction,Boolean,true,,Create autosave after market transaction,,,
 autosave_on_battle,Autosave on battle,Boolean,true,,Create autosave after battle,,,
 use_full_save,Use periodic full save,Boolean,false,,Create a full save after given duration,,,
-full_save_period,Full save period,Int,15,,Duration between full saves,,,
+full_save_period,Full save period,Int,15,,Duration between full saves,,, 
+autosave_min_interval,Minimum Autosave Interval (Minutes),Slider,15,,Minimum real time (minutes) between mod autosaves,1,120,
