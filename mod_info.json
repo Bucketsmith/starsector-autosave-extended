@@ -3,7 +3,7 @@
   "name": "Autosave Extended", # Displayed to the player
   "author": "Astru43",
   "utility": true,
-  "version": { "major": '1', "minor": '1', "patch": '0' },
+  "version": { "major": '1', "minor": '2', "patch": '0' },
   "description": "Autosave for 0.98a",
   "gameVersion": "0.98a-RC7",
   "jars": [ "jars/autosave-extended.jar" ],
